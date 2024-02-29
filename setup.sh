@@ -24,7 +24,8 @@ if ! grep -q 'export BABYLOND_KEYRING_BACKEND=file' ~/.profile; then
 fi
 
 sudo apt -qy install curl git jq lz4 build-essential unzip
-
+rm -rf babylon
+rm -rf $HOME/.babylond
 git clone https://github.com/babylonchain/babylon.git
 cd babylon
 git checkout v0.8.3
@@ -72,7 +73,7 @@ sed -i \
   $HOME/.babylond/config/app.toml
 
 # Helper tools
-cd $HOME/babylon
+cd "$(dirname "$0")"
 rm -rf babylon check_balance.sh create_validator.sh unjail_validator.sh check_validator.sh start_babylon.sh check_log.sh
 echo "babylond q bank balances \$(babylond keys show $VALIDATOR_KEY_NAME -a)" > check_balance.sh && chmod +x check_balance.sh
 tee create_validator.sh > /dev/null <<EOF
