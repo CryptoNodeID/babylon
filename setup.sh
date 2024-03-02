@@ -31,8 +31,8 @@ cd babylon
 git checkout v0.8.3
 make build
 
-mkdir -p ~/.babylond/cosmovisor/genesis/bin
-mkdir -p ~/.babylond/cosmovisor/upgrades
+mkdir -p $HOME/.babylond/cosmovisor/genesis/bin
+mkdir -p $HOME/.babylond/cosmovisor/upgrades
 
 mv build/babylond $HOME/.babylond/cosmovisor/genesis/bin/
 rm -rf build
@@ -73,7 +73,7 @@ sed -i \
   $HOME/.babylond/config/app.toml
 
 # Helper tools
-cd "$(dirname ${BASH_SOURCE[0]})"
+cd $HOME/babylon
 rm -rf babylon check_balance.sh create_validator.sh unjail_validator.sh check_validator.sh start_babylon.sh check_log.sh
 echo "babylond q bank balances \$(babylond keys show $VALIDATOR_KEY_NAME -a)" > check_balance.sh && chmod +x check_balance.sh
 tee create_validator.sh > /dev/null <<EOF
@@ -88,7 +88,7 @@ babylond tx staking create-validator \
   --commission-max-rate="0.20" \
   --commission-max-change-rate="0.01" \
   --min-self-delegation="1" \
-  --fees="200ubbn" \
+  --fees="1000ubbn" \
   --gas-adjustment="1.4" \
   --gas=auto \
   --gas-prices="0.00001ubbn" \
@@ -133,7 +133,7 @@ journalctl -u babylond -f
 EOF
 chmod +x check_log.sh
 
-if ! command -v cosmovisor &> /dev/null; then
+if ! command -v cosmovisor > /dev/null 2>&1 || ! which cosmovisor &> /dev/null; then
     wget https://github.com/cosmos/cosmos-sdk/releases/download/cosmovisor%2Fv1.5.0/cosmovisor-v1.5.0-linux-amd64.tar.gz
     tar -xvzf cosmovisor-v1.5.0-linux-amd64.tar.gz
     rm cosmovisor-v1.5.0-linux-amd64.tar.gz
